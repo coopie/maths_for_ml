@@ -1,16 +1,26 @@
-function [ W ] = PCA( F, reduced_dimensions )
+function [ U, inv_root_lambda ] = PCA( F, reduced_dimensions )
 %PCA 
-%   Detailed explanation goes here
-mu = mean(F);
-MU = ones(size(F))*diag(mu);
+%   Matrix is of shape (features X examples)
+mu = mean(F, 2);
+
+MU = repmat(mu, 1, size(F, 2));
 
 X = F - MU;
-
+% X
 [eigenVectors, eigenValues] = eig(X' * X);
+%
 
-shape = size(eigenVectors);
-num_cols = shape(2);
+% some reshaping so eigenVectors and eigenValues are ordered by eigenvalue descending
+eigenVectors = fliplr(eigenVectors);
+eigenValues = flipud(fliplr(eigenValues));
 
-W = eigenVectors(:, (num_cols-reduced_dimensions + 1):num_cols);
+
+% return inv_root_lambda so whitened pca can be used as well
+inv_root_lambda = eigenValues ^ (-0.5);
+U = X * eigenVectors * inv_root_lambda;
+
 end
+
+
+
 

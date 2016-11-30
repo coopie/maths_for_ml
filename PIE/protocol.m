@@ -38,15 +38,21 @@ for jj = 1:20
     %%%%This is where you put your function%%%%%%%%%%%%%
     %%%Currently there is no dimensionality reduction%%%
     
-    U_reduc = PCA(fea_Train, 340);
+    [U_reduc, whiten_factor] = PCA(fea_Train', 340);
 %     U_reduc = eye(size(64*64,64*64)); 
-    size(U_reduc)
+
+%     size(U_reduc)
     
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     %%dimensionality reduction step
-    oldfea = fea_Train*U_reduc;
-    newfea = fea_Test*U_reduc;
+    
+    oldfea = (U_reduc' * center(fea_Train'))';
+    newfea = (U_reduc' * center(fea_Test'))';
+    
+%     oldfea = fea_Train*U_reduc;
+%     newfea = fea_Test*U_reduc;
 
     %%subtraction of the mean
     mg = mean(oldfea, 1);
